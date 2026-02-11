@@ -18,23 +18,31 @@ file_name = 'SurveyDummy.csv'
 full_path = os.path.join(folder_path, file_name)
 
 df = pd.read_csv(full_path, header=0)
-serviceLineOptions = df['Service Line'].unique().tolist()
-serviceLine = st.sidebar.selectbox(
-    'Service line', options=serviceLineOptions, key='serviceLine')
+# serviceLineOptions = df['Service Line'].unique().tolist()
+serviceLineFilter = st.sidebar.multiselect(
+    'Service line',
+    options = df['Service Line'].unique()
+)
 
-bandOptions = df['Band'].unique().tolist()
-band = st.sidebar.selectbox('Band', options=bandOptions, key='band')
+# bandOptions = df['Band'].unique().tolist()
+bandFilter = st.sidebar.multiselect(
+    'Band',
+    options = df['Band'].unique()
+)
 
-genderOptions = df['Gender'].unique().tolist()
-gender = st.sidebar.selectbox('Gender', options=genderOptions, key='gender')
+# genderOptions = df['Gender'].unique()
+genderFilter = st.sidebar.multiselect(
+    'Gender', 
+    options = df['Gender'].unique()
+    )
 
 answer_cols = ["Answer1", "Answer2", "Answer3", "Answer4", "Answer5"]
 df[answer_cols] = df[answer_cols].replace({"TRUE": True, "FALSE": False})
 
 filtered_df = df[
-    (df["Gender"].isin(genderOptions)) &
-    (df["Band"].isin(bandOptions)) &
-    (df["Service Line"].isin(serviceLineOptions))
+    (df["Gender"].isin(genderFilter)) &
+    (df["Band"].isin(bandFilter)) &
+    (df["Service Line"].isin(serviceLineFilter))
 ]
 
 result = (
@@ -44,12 +52,10 @@ result = (
 )
 
 long_df = result.melt(
-    id_vars="Service Line",
-    value_vars=answer_cols,
-    var_name="Answer",
-    value_name="True Count"
+    id_vars = "Service Line",
+    value_vars = answer_cols,
+    var_name = "Answer",
+    value_name = "True Count"
 )
 
-st.bar_chart(long_df,
-x="Answer",
-y="True Count")
+st.bar_chart(long_df)
