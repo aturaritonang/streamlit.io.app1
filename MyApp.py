@@ -6,3 +6,5 @@ st.write("""
 Hello *world!*
 """)
 
+df = pd.read_csv("BAST-331.csv")
+st.line_chart(df)
