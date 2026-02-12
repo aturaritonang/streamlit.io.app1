@@ -57,7 +57,7 @@ if full_path is not None:
     chart = alt.Chart(totals).mark_bar().encode(
         x=alt.X("Answer:N", title="Answer"),
         y=alt.Y("TRUE_Count:Q", title="TRUE Count"),
-        color="Answer:N"
+        color=alt.Color("Answer:N", legend=None)
     ).properties(height=400)
 
     st.altair_chart(chart, use_container_width=True)
