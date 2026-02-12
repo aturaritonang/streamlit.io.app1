@@ -5,10 +5,6 @@ import altair as alt
 
 st.title('Survey')
 st.sidebar.header('Filter')
-# st.write("""
-# # My first app
-# Hello *world!*
-# """)
 folder_path = 'data'  # Relative path to your folder
 file_name = 'SurveyDummy.csv'
 full_path = os.path.join(folder_path, file_name)
@@ -34,6 +30,8 @@ genderFilter = st.sidebar.selectbox(
     options = df['Gender'].unique().tolist(),
     index = 0
     )
+
+# Chart pertama
 
 # Bersihkan nama kolom
 df.columns = df.columns.str.strip()
