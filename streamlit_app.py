@@ -4,7 +4,7 @@ import pandas as pd
 import altair as alt
 
 st.title('Survey')
-st.sidebar.header('Filter')
+st.sidebar.header('Criteria')
 folder_path = 'data'  # Relative path to your folder
 file_name = 'SurveyDummy.csv'
 full_path = os.path.join(folder_path, file_name)

@@ -23,7 +23,7 @@ if full_path is not None:
     # =====================
     # FILTER
     # =====================
-    st.sidebar.header("Filters")
+    st.sidebar.header("Criteria")
 
     service_options = ["All"] + sorted(df["Service Line"].unique())
     gender_options = ["All"] + sorted(df["Gender"].unique())
