@@ -122,9 +122,19 @@ if st.session_state.login:
                     row["Option5"]
                 ]
 
-                random.shuffle(options)
+                # random.shuffle(options)
 
                 key = f"{domain}_{i}"
+
+                options_key = f"{key}_options"
+
+                if options_key not in st.session_state:
+                    shuffled = options.copy()
+                    random.shuffle(shuffled)
+                    st.session_state[options_key] = shuffled
+
+                options = st.session_state[options_key]
+
                 default = st.session_state.answers.get(key, [])
 
                 with st.container(border=True):
@@ -148,6 +158,7 @@ if st.session_state.login:
                     st.session_state.answers[key] = selected
 
         submit_btn = st.form_submit_button("✅ Submit")
+        # st.write(st.session_state.answers)
 
     # ==============================
     # SUBMIT
