@@ -21,7 +21,7 @@ scope = [
 ]
 
 creds = ServiceAccountCredentials.from_json_keyfile_name(
-    "/data/credential/credential.json", scope
+    "data/credential/credential.json", scope
 )
 client = gspread.authorize(creds)
 
@@ -44,7 +44,7 @@ except:
     response_sheet = response_file.sheet1
     response_sheet.append_row([
         "Timestamp", "Email", "Name",
-        "Business Line", "Band", "Quiz", "Answer"
+        "Business Line", "Band", "Domain", "Quiz", "Answer"
     ])
 
 # ==============================
@@ -68,25 +68,53 @@ if "service_line" not in st.session_state:
 # ==============================
 # LOGIN
 # ==============================
-st.title("🔐 Login")
 
-if not st.session_state.login:
-    email = st.text_input("Email")
-    password = st.text_input("Password", type="password")
+# st.title("🔐 Login")
 
-    if st.button("Login"):
-        user = audien_df[
-            (audien_df["Email"] == email) &
-            (audien_df["Password"] == password)
-        ]
+# if not st.session_state.login:
+#     email = st.text_input("Email")
+#     password = st.text_input("Password", type="password")
 
-        if not user.empty:
-            st.session_state.login = True
-            st.session_state.email = email
-            st.session_state.name = user.iloc[0]["Name"]
-            st.success("Login berhasil")
-        else:
-            st.error("Email / Password salah")
+#     if st.button("Login"):
+#         user = audien_df[
+#             (audien_df["Email"] == email) &
+#             (audien_df["Password"] == password)
+#         ]
+
+#         if not user.empty:
+#             st.session_state.login = True
+#             st.session_state.email = email
+#             st.session_state.name = user.iloc[0]["Name"]
+#             st.success("Login berhasil")
+#         else:
+#             st.error("Email / Password salah")
+
+# 🔲 BOX START
+with st.container(border=True):
+    if not st.session_state.get("login", False):
+        st.title("🔐 Login")
+        email = st.text_input("Email")
+        password = st.text_input("Password", type="password")
+
+        if st.button("Login"):
+            user = audien_df[
+                (audien_df["Email"] == email) &
+                (audien_df["Password"] == password)
+            ]
+
+            if not user.empty:
+                st.session_state.login = True
+                st.session_state.email = email
+                st.session_state.name = user.iloc[0]["Name"]
+
+                st.success("Login berhasil")
+
+                st.rerun()  # 🔥 penting: refresh UI
+            else:
+                st.error("Email / Password salah")
+
+    else:
+        st.success(f"Welcome, {st.session_state.name} 👋")
 
 # ==============================
 # MAIN APP
@@ -118,60 +146,163 @@ if st.session_state.login:
     # ==============================
     domains = quiz_df["Domain"].unique()
 
-    selected_domain = st.sidebar.radio(
-        "Pilih Domain",
-        domains
-    )
+    # selected_domain = st.sidebar.radio(
+    #     "Pilih Domain",
+    #     domains
+    # )
 
-    st.header(f"Domain: {selected_domain}")
+    # st.header(f"Domain: {selected_domain}")
 
-    domain_df = quiz_df[quiz_df["Domain"] == selected_domain]
+    # domain_df = quiz_df[quiz_df["Domain"] == selected_domain]
 
     # ==============================
     # FORM
     # ==============================
-    with st.form(f"form_{selected_domain}"):
+    # with st.form(f"form_{selected_domain}"):
 
-        for i, row in domain_df.iterrows():
+    #     for i, row in domain_df.iterrows():
 
-            quiz = row["Quiz"]
+    #         quiz = row["Quiz"]
 
-            options = [
-                row["Option1"],
-                row["Option2"],
-                row["Option3"],
-                row["Option4"],
-                row["Option5"]
-            ]
+    #         options = [
+    #             row["Option1"],
+    #             row["Option2"],
+    #             row["Option3"],
+    #             row["Option4"],
+    #             row["Option5"]
+    #         ]
 
-            random.shuffle(options)
+    #         random.shuffle(options)
 
-            key = f"{selected_domain}_{i}"
-            default = st.session_state.answers.get(key, [])
+    #         key = f"{selected_domain}_{i}"
+    #         default = st.session_state.answers.get(key, [])
 
-            selected = st.multiselect(
-                quiz,
-                options,
-                default=default,
-                key=key,
-                disabled=st.session_state.submitted
-            )
+    #         selected = st.multiselect(
+    #             quiz,
+    #             options,
+    #             default=default,
+    #             key=key,
+    #             disabled=st.session_state.submitted
+    #         )
+
+    #         st.session_state.answers[key] = selected
+
+    #     col1, col2 = st.columns(2)
+
+    #     with col1:
+    #         save_btn = st.form_submit_button("💾 Save")
+
+    #     with col2:
+    #         submit_btn = st.form_submit_button("✅ Submit")
+
+    # with st.form(f"form_{selected_domain}"):
+
+    #     for i, row in domain_df.iterrows():
+
+    #         domain = row["Domain"]
+
+    #         quiz = row["Quiz"]
+
+    #         options = [
+    #             row["Option1"],
+    #             row["Option2"],
+    #             row["Option3"],
+    #             row["Option4"],
+    #             row["Option5"]
+    #         ]
+
+    #         random.shuffle(options)
+
+    #         key = f"{selected_domain}_{i}"
+    #         default = st.session_state.answers.get(key, [])
+
+    #         # 🔲 BOX START
+    #         with st.container(border=True):
+    #             st.write(f"{quiz}")
+
+    #             selected = []
+
+    #             for opt_idx, option in enumerate(options):
+    #                 checkbox_key = f"{key}_{opt_idx}"
+
+    #                 checked = st.checkbox(
+    #                     option,
+    #                     value=option in default,
+    #                     key=checkbox_key,
+    #                     disabled=st.session_state.submitted
+    #                 )
+
+    #                 if checked:
+    #                     selected.append(option)
+
+    #         st.session_state.answers[key] = selected
+
+    #     col1, col2 = st.columns(2)
+
+    #     with col1:
+    #         save_btn = st.form_submit_button("💾 Save")
+
+    #     with col2:
+    #         submit_btn = st.form_submit_button("✅ Submit")
+
+    with st.form("main_form"):
+
+        for domain in domains:
+
+            st.header(f"📂 {domain}")
+
+            domain_df = quiz_df[quiz_df["Domain"] == domain]
+
+            for i, row in domain_df.iterrows():
+
+                quiz = row["Quiz"]
+
+                options = [
+                    row["Option1"],
+                    row["Option2"],
+                    row["Option3"],
+                    row["Option4"],
+                    row["Option5"]
+                ]
+
+                random.shuffle(options)
+
+                key = f"{domain}_{i}"
+                default = st.session_state.answers.get(key, [])
+
+                with st.container(border=True):
+                    st.write(f"{quiz}")
+
+                    selected = []
+
+                    for opt_idx, option in enumerate(options):
+                        checkbox_key = f"{key}_{opt_idx}"
+
+                        checked = st.checkbox(
+                            option,
+                            value=option in default,
+                            key=checkbox_key,
+                            disabled=st.session_state.submitted
+                        )
+
+                        if checked:
+                            selected.append(option)
 
             st.session_state.answers[key] = selected
 
         col1, col2 = st.columns(2)
 
-        with col1:
-            save_btn = st.form_submit_button("💾 Save")
+        # with col1:
+        #     save_btn = st.form_submit_button("💾 Save")
 
-        with col2:
+        with col1:
             submit_btn = st.form_submit_button("✅ Submit")
 
     # ==============================
     # SAVE (DRAFT)
     # ==============================
-    if save_btn:
-        st.success("✅ Progress tersimpan (draft)")
+    # if save_btn:
+    #     st.success("✅ Progress tersimpan (draft)")
 
     # ==============================
     # SUBMIT FINAL
@@ -186,35 +317,38 @@ if st.session_state.login:
             valid = True
 
             for key, val in st.session_state.answers.items():
-                if key.startswith(selected_domain):
-                    if len(val) < 3:
-                        valid = False
-                        break
+                # if key.startswith(domain):
+                if len(val) < 3:
+                    valid = False
+                    break
 
             if not valid:
                 st.error("❌ Setiap soal wajib minimal 3 jawaban")
             else:
+                timeStamp = datetime.now()
                 for i, row in domain_df.iterrows():
 
+                    domain = row["Domain"] 
                     quiz = row["Quiz"]
-                    key = f"{selected_domain}_{i}"
+                    key = f"{domain}_{i}"
                     selected = st.session_state.answers.get(key, [])
 
                     response_sheet.append_row([
-                        str(datetime.now()),
+                        str(timeStamp),
                         st.session_state.email,
                         st.session_state.name,
                         st.session_state.service_line,
                         st.session_state.band,
+                        domain,
                         quiz,
-                        ", ".join(selected)
+                        "; ".join(selected)
                     ])
 
-                st.session_state.submitted = True
-                st.success("🎉 Submit berhasil! Data tidak bisa diubah lagi.")
+                st.session_state.submitted = valid
+                st.success("🎉 Submit berhasil!")
 
 # ==============================
 # LOCK UI
 # ==============================
 if st.session_state.submitted:
-    st.warning("⚠️ Jawaban sudah final dan tidak dapat diubah.")
+    st.warning("⚠️ Jawaban sudah disubmit")
