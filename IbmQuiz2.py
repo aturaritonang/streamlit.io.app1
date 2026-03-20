@@ -3,29 +3,46 @@ import pandas as pd
 import random
 from datetime import datetime
 import os
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 
 # ==============================
 # CONFIG FILE PATH
 # ==============================
 QUIZ_PATH = "data/raw/MasterQuiz.csv"
 AUDIENS_PATH = "data/raw/MasterAudiens.csv"
-RESPONSES_PATH = "data/raw/Responses.csv"
+
+# ==============================
+# GOOGLE SHEETS CONNECT
+# ==============================
+scope = [
+    "https://spreadsheets.google.com/feeds",
+    "https://www.googleapis.com/auth/drive"
+]
+
+creds = ServiceAccountCredentials.from_json_keyfile_name(
+    "data/credential/credential.json", scope
+)
+client = gspread.authorize(creds)
+
+# ==============================
+# RESPONSE SHEET
+# ==============================
+try:
+    response_sheet = client.open("Responses").sheet1
+except:
+    response_file = client.create("Responses")
+    response_sheet = response_file.sheet1
+    response_sheet.append_row([
+        "Timestamp", "Email", "Name",
+        "Business Line", "Band", "Domain", "Quiz", "Answer"
+    ])
 
 # ==============================
 # LOAD DATA
 # ==============================
 quiz_df = pd.read_csv(QUIZ_PATH)
 audien_df = pd.read_csv(AUDIENS_PATH)
-
-# ==============================
-# INIT RESPONSES FILE
-# ==============================
-if not os.path.exists(RESPONSES_PATH):
-    df_init = pd.DataFrame(columns=[
-        "Timestamp", "Email", "Name",
-        "Business Line", "Band", "Domain", "Quiz", "Answer"
-    ])
-    df_init.to_csv(RESPONSES_PATH, index=False)
 
 # ==============================
 # SESSION STATE
@@ -180,19 +197,16 @@ if st.session_state.login:
                 st.error("❌ Setiap soal wajib minimal 3 jawaban")
             else:
                 timeStamp = datetime.now()
-
-                rows = []
-
                 for domain in domains:
                     domain_df = quiz_df[quiz_df["Domain"] == domain]
-
                     for i, row in domain_df.iterrows():
 
+                        domain = row["Domain"] 
                         quiz = row["Quiz"]
                         key = f"{domain}_{i}"
                         selected = st.session_state.answers.get(key, [])
 
-                        rows.append([
+                        response_sheet.append_row([
                             str(timeStamp),
                             st.session_state.email,
                             st.session_state.name,
@@ -203,17 +217,7 @@ if st.session_state.login:
                             "; ".join(selected)
                         ])
 
-                # ✅ append ke CSV (efisien, sekali write)
-                df_new = pd.DataFrame(rows, columns=[
-                    "Timestamp", "Email", "Name",
-                    "Business Line", "Band", "Domain", "Quiz", "Answer"
-                ])
-
-                df_existing = pd.read_csv(RESPONSES_PATH)
-                df_final = pd.concat([df_existing, df_new], ignore_index=True)
-                df_final.to_csv(RESPONSES_PATH, index=False)
-
-                st.session_state.submitted = True
+                st.session_state.submitted = valid
                 st.success("🎉 Submit berhasil!")
 
 # ==============================
