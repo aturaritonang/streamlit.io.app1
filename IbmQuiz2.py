@@ -4,7 +4,8 @@ import random
 from datetime import datetime
 import os
 import gspread
-from oauth2client.service_account import ServiceAccountCredentials
+from oauth2client.service_account import Credential
+# from oauth2client.service_account import ServiceAccountCredentials
 
 # ==============================
 # CONFIG FILE PATH
@@ -20,9 +21,15 @@ scope = [
     "https://www.googleapis.com/auth/drive"
 ]
 
-creds = ServiceAccountCredentials.from_json_keyfile_name(
-    "data/credential/credential.json", scope
+# creds = ServiceAccountCredentials.from_json_keyfile_name(
+#     "data/credential/credential.json", scope
+# )
+
+creds = Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"],
+    scopes=scope
 )
+
 client = gspread.authorize(creds)
 
 # ==============================
