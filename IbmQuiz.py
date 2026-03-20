@@ -8,7 +8,6 @@ from oauth2client.service_account import ServiceAccountCredentials
 # ==============================
 # CONFIG
 # ==============================
-FOLDER_NAME = "Quiz Folder"
 QUIZ_FILE = "Master Quiz"
 AUDIENS_FILE = "Master Audiens"
 
@@ -25,10 +24,8 @@ creds = ServiceAccountCredentials.from_json_keyfile_name(
 )
 client = gspread.authorize(creds)
 
-# buka folder
-folder = client.open(QUIZ_FILE)  # file tetap dibuka langsung
-
-quiz_sheet = folder.sheet1  # Master Quiz
+# buka files
+quiz_sheet = client.open(QUIZ_FILE).sheet1  # Master Quiz
 quiz_df = pd.DataFrame(quiz_sheet.get_all_records())
 
 audien_sheet = client.open(AUDIENS_FILE).sheet1
@@ -287,8 +284,10 @@ if st.session_state.login:
 
                         if checked:
                             selected.append(option)
+                        # else:
+                        #     selected.remove(option)
 
-            st.session_state.answers[key] = selected
+                    st.session_state.answers[key] = selected
 
         col1, col2 = st.columns(2)
 
@@ -297,6 +296,8 @@ if st.session_state.login:
 
         with col1:
             submit_btn = st.form_submit_button("✅ Submit")
+
+        st.write(st.session_state.answers)
 
     # ==============================
     # SAVE (DRAFT)
@@ -326,23 +327,25 @@ if st.session_state.login:
                 st.error("❌ Setiap soal wajib minimal 3 jawaban")
             else:
                 timeStamp = datetime.now()
-                for i, row in domain_df.iterrows():
+                for domain in domains:
+                    domain_df = quiz_df[quiz_df["Domain"] == domain]
+                    for i, row in domain_df.iterrows():
 
-                    domain = row["Domain"] 
-                    quiz = row["Quiz"]
-                    key = f"{domain}_{i}"
-                    selected = st.session_state.answers.get(key, [])
+                        domain = row["Domain"] 
+                        quiz = row["Quiz"]
+                        key = f"{domain}_{i}"
+                        selected = st.session_state.answers.get(key, [])
 
-                    response_sheet.append_row([
-                        str(timeStamp),
-                        st.session_state.email,
-                        st.session_state.name,
-                        st.session_state.service_line,
-                        st.session_state.band,
-                        domain,
-                        quiz,
-                        "; ".join(selected)
-                    ])
+                        response_sheet.append_row([
+                            str(timeStamp),
+                            st.session_state.email,
+                            st.session_state.name,
+                            st.session_state.service_line,
+                            st.session_state.band,
+                            domain,
+                            quiz,
+                            "; ".join(selected)
+                        ])
 
                 st.session_state.submitted = valid
                 st.success("🎉 Submit berhasil!")
