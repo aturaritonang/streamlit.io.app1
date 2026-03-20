@@ -26,7 +26,7 @@ def transform():
             answers = [a.strip() for a in answers_raw.split(";") if a.strip() != ""]
             master_row = question_map[q]
             # Extract master rating options
-            opt_5 = master_row["5 - Role Model"]
+            opt_5 = master_row["5 ? Role Model"]
             opt_4 = master_row["4 ? Fully Meets Expectations"]
             opt_3 = master_row["3 ? Partially Meets Expectations"]
             opt_2 = master_row["2 ? Needs Improvement"]
