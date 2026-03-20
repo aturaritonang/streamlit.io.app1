@@ -21,7 +21,7 @@ scope = [
 ]
 
 creds = ServiceAccountCredentials.from_json_keyfile_name(
-    "data/credential/credentials.json", scope
+    "data/credential/custom-history-497-cf16fd3f136c.json", scope
 )
 client = gspread.authorize(creds)
 
