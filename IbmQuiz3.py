@@ -145,7 +145,7 @@ if st.session_state.login:
 
         for domain in domains:
 
-            st.header(f"📂 {domain}")
+            st.subheader(f"📂 {domain}")
 
             domain_df = quiz_df[quiz_df["Domain"] == domain]
 
