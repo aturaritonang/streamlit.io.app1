@@ -74,7 +74,7 @@ st.title("📊 Survey")
 # ==============================
 if not st.session_state.get("login", False):
     with st.container(border=True):
-        st.title("🔐 Login")
+        st.subheader("🔐 Login")
         email = st.text_input("Email")
         password = st.text_input("Password", type="password")
 
