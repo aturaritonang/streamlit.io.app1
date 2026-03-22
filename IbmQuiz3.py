@@ -72,8 +72,8 @@ st.title("📊 Survey")
 # ==============================
 # LOGIN
 # ==============================
-with st.container(border=True):
-    if not st.session_state.get("login", False):
+if not st.session_state.get("login", False):
+    with st.container(border=True):
         st.title("🔐 Login")
         email = st.text_input("Email")
         password = st.text_input("Password", type="password")
@@ -100,8 +100,8 @@ with st.container(border=True):
                 st.rerun()
             else:
                 st.error("Incorrect email/password.")
-    else:
-        st.success(f"Welcome, {st.session_state.name} 👋")
+    # else:
+    #     st.success(f"Welcome, {st.session_state.name} 👋")
 
 # ==============================
 # MAIN APP
@@ -115,24 +115,26 @@ if st.session_state.login:
         st.success("✅ Your survey has been saved.")
         st.stop()
 
-    st.write(f"Halo, {st.session_state.name}")
+    # st.write(f"Halo, {st.session_state.name} 👋")
+    st.subheader(f"Halo, {st.session_state.name} 👋")
 
     # ==============================
     # STATIC SELECTION
     # ==============================
-    st.subheader("📌 Mandatory information")
+    with st.container(border=True):
+        st.subheader("📌 Mandatory information")
 
-    st.session_state.band = st.selectbox(
-        "Band",
-        ["Band 5", "Band 6", "Band 7", "Band 8", "Band 9", "Band 10"],
-        disabled=st.session_state.submitted
-    )
+        st.session_state.band = st.selectbox(
+            "Band",
+            ["Band 5", "Band 6", "Band 7", "Band 8", "Band 9", "Band 10"],
+            disabled=st.session_state.submitted
+        )
 
-    st.session_state.service_line = st.selectbox(
-        "Service Line",
-        ["Applicationn Operations", "Hybrid Cloud and Data"],
-        disabled=st.session_state.submitted
-    )
+        st.session_state.service_line = st.selectbox(
+            "Service Line",
+            ["Applicationn Operations", "Hybrid Cloud and Data"],
+            disabled=st.session_state.submitted
+        )
 
     # ==============================
     # ALL DOMAINS
