@@ -67,6 +67,8 @@ if "band" not in st.session_state:
 if "service_line" not in st.session_state:
     st.session_state.service_line = None
 
+st.title("📊 Survey")
+
 # ==============================
 # LOGIN
 # ==============================
@@ -94,10 +96,10 @@ with st.container(border=True):
                     st.session_state.submitted = True
                     # st.success("Sudah submit")
                     
-                st.success("Login berhasil")
+                st.success("Login successful.")
                 st.rerun()
             else:
-                st.error("Email / Password salah")
+                st.error("Incorrect email/password.")
     else:
         st.success(f"Welcome, {st.session_state.name} 👋")
 
@@ -106,13 +108,11 @@ with st.container(border=True):
 # ==============================
 if st.session_state.login:
 
-    st.title("📊 Quiz Survey")
-
     # ==============================
     # JIKA SUDAH SUBMIT
     # ==============================
     if st.session_state.submitted:
-        st.success("✅ Survey Anda sudah tersimpan")
+        st.success("✅ Your survey has been saved.")
         st.stop()
 
     st.write(f"Halo, {st.session_state.name}")
@@ -120,7 +120,7 @@ if st.session_state.login:
     # ==============================
     # STATIC SELECTION
     # ==============================
-    st.subheader("📌 Informasi Wajib")
+    st.subheader("📌 Mandatory information")
 
     st.session_state.band = st.selectbox(
         "Band",
@@ -203,7 +203,7 @@ if st.session_state.login:
     if submit_btn:
 
         if not st.session_state.band or not st.session_state.service_line:
-            st.error("❌ Band dan Service Line wajib diisi")
+            st.error("❌ Band and Service Line are required.")
 
         else:
             valid = True
@@ -214,7 +214,7 @@ if st.session_state.login:
                     break
 
             if not valid:
-                st.error("❌ Setiap soal wajib minimal 3 jawaban")
+                st.error("❌ Each question requires at least 3 answers.")
             else:
                 timeStamp = datetime.now()
                 for domain in domains:
@@ -238,11 +238,11 @@ if st.session_state.login:
                         ])
 
                 st.session_state.submitted = valid
-                st.success("🎉 Submit berhasil!")
+                st.success("🎉 Submit successfully.")
                 st.rerun()
 
 # ==============================
 # LOCK UI
 # ==============================
 if st.session_state.submitted:
-    st.warning("⚠️ Jawaban sudah disubmit")
+    st.warning("⚠️ The answers have been submitted")
