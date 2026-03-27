@@ -21,12 +21,9 @@ creds = Credentials.from_service_account_info(
 
 client = gspread.authorize(creds)
 
-quizMaster = client.open("Master Quiz").worksheet("Trial-Id")
-dataQuiz = quizMaster.get_all_records()
-dfQuiz = pd.DataFrame(dataQuiz)
+sheet = client.open("Result Townhall").sheet1
 
-result = client.open("Result Townhall").sheet1
-data = result.get_all_records()
+data = sheet.get_all_records()
 df = pd.DataFrame(data)
 
 # =====================
@@ -60,17 +57,11 @@ for quiz in quiz_list:
     
     quiz_df = df[df["Quiz"] == quiz]
 
-    masterQuiz = dfQuiz[dfQuiz["Quiz"] == quiz]
-
-    # option = masterQuiz["5 Role Model"]; 
-    # st.text(f"{option}")
-
     totals = quiz_df[answer_cols].sum().reset_index()
-    totals.columns = ["Level", "Total"]
+    totals.columns = ["Level", "Answer"]
 
     # Ensure order tetap
     totals["Level"] = pd.Categorical(totals["Level"], categories=answer_cols, ordered=True)
-    # totals["Answer"] = masterQuiz[totals["Level"]]
     totals = totals.sort_values("Level")
 
     # =====================
@@ -110,10 +101,10 @@ chart_all = alt.Chart(totals_all).mark_bar().encode(
 
 st.altair_chart(chart_all, use_container_width=True)
 
-st.dataframe(totals_all, use_container_width=True)
+st.dataframe(totals_all, use_container_width=True, hide_index=True)
 
 # =====================
 # RAW DATA
 # =====================
-with st.expander("See Raw Data"):
-    st.dataframe(df)
+# with st.expander("See Raw Data"):
+#     st.dataframe(df)
