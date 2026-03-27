@@ -4,19 +4,6 @@ import altair as alt
 import gspread
 from google.oauth2.service_account import Credentials
 
-# st.markdown("""
-#     <style>
-#     .stDataFrame td {
-#         white-space: normal !important;
-#         word-wrap: break-word !important;
-#     }
-#     .stDataFrame th {
-#         white-space: normal !important;
-#         word-wrap: break-word !important;
-#     }
-#     </style>
-# """, unsafe_allow_html=True)
-
 st.title("Survey Dashboard")
 
 # =====================
@@ -109,7 +96,9 @@ for quiz in quiz_list:
     )
     
     # st.dataframe(newTotals, use_container_width=False, hide_index=True)
-    st.table(newTotals.reset_index(drop=True))
+    df_no_index = newTotals.reset_index().drop(columns=["index"])
+    st.table(df_no_index)
+    # st.table(newTotals)
 
     st.markdown("---")
 
@@ -125,14 +114,15 @@ totals_all["Level"] = pd.Categorical(totals_all["Level"], categories=answer_cols
 totals_all = totals_all.sort_values("Level")
 
 chart_all = alt.Chart(totals_all).mark_bar().encode(
-    x=alt.X("Level:N", sort=answer_cols, title="Level"),
+    # x=alt.X("Level:N", sort=answer_cols, title="Level"),
+    x=alt.X("idx:O", title="Level"),
     y=alt.Y("Answer:Q", title="Total"),
     color=alt.Color("Level:N", legend=None)
 ).properties(height=400)
 
-st.altair_chart(chart_all, use_container_width=True)
+st.altair_chart(chart_all, width="content")
 
-st.dataframe(totals_all, use_container_width=True, hide_index=True)
+st.dataframe(totals_all, width="content", hide_index=True)
 
 # =====================
 # RAW DATA
