@@ -73,17 +73,17 @@ def transform():
 
             master_row = question_map[q]
 
-            # opt_5 = master_row["5 ? Role Model"]
-            # opt_4 = master_row["4 ? Fully Meets Expectations"]
-            # opt_3 = master_row["3 ? Partially Meets Expectations"]
-            # opt_2 = master_row["2 ? Needs Improvement"]
-            # opt_1 = master_row["1 ? Does Not Meet Expectations"]
+            opt_5 = master_row["5 Role Model"]
+            opt_4 = master_row["4 Fully Meets Expectations"]
+            opt_3 = master_row["3 Partially Meets Expectations"]
+            opt_2 = master_row["2 Needs Improvement"]
+            opt_1 = master_row["1 Does Not Meet Expectations"]
 
-            opt_1 = master_row["Option1"]
-            opt_2 = master_row["Option2"]
-            opt_3 = master_row["Option3"]
-            opt_4 = master_row["Option4"]
-            opt_5 = master_row["Option5"]
+            # opt_1 = master_row["Option1"]
+            # opt_2 = master_row["Option2"]
+            # opt_3 = master_row["Option3"]
+            # opt_4 = master_row["Option4"]
+            # opt_5 = master_row["Option5"]
 
             rows.append({
                 "ID": r["ID"],
