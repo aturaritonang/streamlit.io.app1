@@ -21,15 +21,15 @@ client = gspread.authorize(creds)
 # ==============================
 # LOAD SHEETS
 # ==============================
-master_sheet = client.open("Master Quiz").worksheet("Quiz")
-responses_sheet = client.open("Survey Dummy 2 Anyone(1-5)").sheet1
+master_sheet = client.open("Master Quiz").worksheet("Trial-Id")
+responses_sheet = client.open("Survey IBMC Townhall").sheet1
 
 # create / open output
 try:
-    output_sheet = client.open("New Response 2").sheet1
+    output_sheet = client.open("Result Townhall").sheet1
     output_sheet.clear()
 except:
-    output_file = client.create("New Response 2")
+    output_file = client.create("Result Townhall")
     output_sheet = output_file.sheet1
 
 # ==============================
@@ -91,8 +91,8 @@ def transform():
                 "Completion time": r["Completion time"],
                 "Email": r["Email"],
                 "Name": r["Name"],
-                "Band": r["Band"],
-                "Gender": r["Gender"],
+                # "Band": r["Band"],
+                # "Gender": r["Gender"],
                 "Last modified time": r["Last modified time"],
                 "Domain": master_row["Domain"],
                 "Quiz": q,
