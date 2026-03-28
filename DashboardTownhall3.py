@@ -4,7 +4,7 @@ import altair as alt
 import gspread
 from google.oauth2.service_account import Credentials
 
-st.title("Survey Dashboard")
+st.title("IBMC Townhall Survey")
 
 # =====================
 # CONNECT TO GOOGLE SHEET
