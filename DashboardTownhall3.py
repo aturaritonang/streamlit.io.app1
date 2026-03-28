@@ -4,7 +4,7 @@ import altair as alt
 import gspread
 from google.oauth2.service_account import Credentials
 
-st.title("IBMC Townhall Survey")
+st.title("🏛️ IBMC Townhall Survey")
 
 # =====================
 # CONNECT TO GOOGLE SHEET
@@ -30,7 +30,7 @@ df = pd.DataFrame(data)
 property = client.open("Result Townhall").worksheet("Property")
 participants_value = property.cell(2, property.find("Participants").col).value
 
-st.subheader("Participants: " + participants_value)
+st.subheader("👥 Participants: " + participants_value)
 # =====================
 # DATA CLEANING
 # =====================
@@ -74,7 +74,9 @@ df[answer_cols] = df[answer_cols].replace({
 quiz_list = df["Quiz"].unique()
 
 for quiz in quiz_list:
-    st.text(f"Quiz: {quiz}")
+
+    st.subheader("👥 Quiz:")
+    st.text(f"{quiz}")
     
     quiz_df = df[df["Quiz"] == quiz]
 
@@ -173,7 +175,7 @@ for quiz in quiz_list:
 # =====================
 # TOTAL KESELURUHAN
 # =====================
-st.header("Total Overall")
+st.header("⭐ Total Overall")
 
 totals_all = df[answer_cols].sum().reset_index()
 totals_all.columns = ["Level", "Total"]
