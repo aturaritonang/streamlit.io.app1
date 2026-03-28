@@ -96,7 +96,7 @@ def transform():
                 "Last modified time": r["Last modified time"],
                 "Domain": master_row["Domain"],
                 "Quiz": q,
-                "Answers": answers_raw,
+                # "Answers": answers_raw,
                 "5 Role Model": "TRUE" if opt_5 in answers else "FALSE",
                 "4 Fully Meets Expectations": "TRUE" if opt_4 in answers else "FALSE",
                 "3 Partially Meets Expectations": "TRUE" if opt_3 in answers else "FALSE",

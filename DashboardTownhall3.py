@@ -23,7 +23,6 @@ client = gspread.authorize(creds)
 
 dfQuiz = pd.DataFrame(client.open("Master Quiz").worksheet("Trial-Id").get_all_records())
 
-
 sheet = client.open("Result Townhall").sheet1
 data = sheet.get_all_records()
 df = pd.DataFrame(data)
@@ -41,7 +40,21 @@ answer_cols = [
     "1 Does Not Meet Expectations"
 ]
 
-answer_cols_alpabet = ["A", "B", "C", "D", "E"]
+answer_cols_alpabet = {
+    "5 Role Model" : "A", 
+    "4 Fully Meets Expectations" : "B", 
+    "3 Partially Meets Expectations" : "C", 
+    "2 Needs Improvement" : "D", 
+    "1 Does Not Meet Expectations" : "E"
+}
+
+rating_colors = {
+    "5 Role Model": "#44ce1b",
+    "4 Fully Meets Expectations": "#bbdb44",
+    "3 Partially Meets Expectations": "#f7e379",
+    "2 Needs Improvement": "#f2a134",
+    "1 Does Not Meet Expectations": "#e51f1f"
+}
 
 # Convert TRUE/FALSE → 1/0
 df[answer_cols] = df[answer_cols].replace({
@@ -64,20 +77,31 @@ for quiz in quiz_list:
     master_quiz_df = dfQuiz[dfQuiz["Quiz"] == quiz]
 
     totals = quiz_df[answer_cols].sum().reset_index()
-    totals.columns = ["Level", "Answer"]
+    totals.columns = ["Level", "Total"]
 
     # Ensure order tetap
     totals["Level"] = pd.Categorical(totals["Level"], categories=answer_cols, ordered=True)
     totals = totals.sort_values("Level")
 
+    totals["Code"] = totals["Level"].map(answer_cols_alpabet)
+
     # =====================
     # CHART
     # =====================
     chart = alt.Chart(totals).mark_bar().encode(
-        x=alt.X("Level:N", sort=answer_cols, title="Level"),
-        y=alt.Y("Answer:Q", title="Total"),
-        color=alt.Color("Level:N", legend=None)
-    ).properties(height=300)
+        # x=alt.X("Level:N", sort=answer_cols, title="Level"),
+        x=alt.X("Code:N", sort=list(answer_cols_alpabet.values()), title="Code", axis=alt.Axis(labelAngle=0)),
+        y=alt.Y("Total:Q", title="Total"),
+        color=alt.Color("Level:N", scale=alt.Scale(
+            domain=list(rating_colors.keys()),
+            range=list(rating_colors.values())
+            ), legend=None),
+        tooltip=[
+            alt.Tooltip("Level:N", title="Level"),
+            alt.Tooltip("Code:N", title="Code"),
+            alt.Tooltip("Total:Q", title="Total")
+        ]
+    ).properties(height=400)
 
     st.altair_chart(chart, use_container_width=True)
 
@@ -92,12 +116,18 @@ for quiz in quiz_list:
     # st.dataframe(master_quiz_df["5 Role Model"], use_container_width=True, hide_index=True)
 
     newTotals["Level"] = newTotals["Level"].apply(
-        lambda L: L + ":\n" + master_quiz_df.iloc[0][L] if L in master_quiz_df.columns else ""
+        lambda L: master_quiz_df.iloc[0][L] if L in master_quiz_df.columns else ""
     )
+
+    # newTotals["Level"] = newTotals["Level"].apply(
+    #     lambda L: f"{answer_cols_alpabet.get(L, '')} - {master_quiz_df.iloc[0][L]}"
+    #           if L in master_quiz_df.columns else ""
+    # )
     
-    # st.dataframe(newTotals, use_container_width=False, hide_index=True)
-    df_no_index = newTotals.reset_index().drop(columns=["index"])
-    st.table(df_no_index)
+    new_order = ["Code", "Level", "Total"]
+    st.dataframe(newTotals[new_order], use_container_width=True, hide_index=True)
+    # df_no_index = newTotals.reset_index().drop(columns=["index"])
+    # st.table(df_no_index)
     # st.table(newTotals)
 
     st.markdown("---")
@@ -108,21 +138,28 @@ for quiz in quiz_list:
 st.header("Total Overall")
 
 totals_all = df[answer_cols].sum().reset_index()
-totals_all.columns = ["Level", "Answer"]
+totals_all.columns = ["Level", "Total"]
 
 totals_all["Level"] = pd.Categorical(totals_all["Level"], categories=answer_cols, ordered=True)
 totals_all = totals_all.sort_values("Level")
 
 chart_all = alt.Chart(totals_all).mark_bar().encode(
-    # x=alt.X("Level:N", sort=answer_cols, title="Level"),
-    x=alt.X("idx:O", title="Level"),
-    y=alt.Y("Answer:Q", title="Total"),
-    color=alt.Color("Level:N", legend=None)
+    x=alt.X("Level:N", sort=answer_cols, title="Code", axis=alt.Axis(labelAngle=0)),
+    y=alt.Y("Total:Q", title="Total"),
+    color=alt.Color("Level:N", scale=alt.Scale(
+            domain=list(rating_colors.keys()),
+            range=list(rating_colors.values())
+            ), legend=None),
+        tooltip=[
+            alt.Tooltip("Level:N", title="Level"),
+            alt.Tooltip("Total:Q", title="Total")
+        ]
 ).properties(height=400)
 
-st.altair_chart(chart_all, width="content")
 
-st.dataframe(totals_all, width="content", hide_index=True)
+st.altair_chart(chart_all, use_container_width=True)
+
+st.dataframe(totals_all, use_container_width=True, hide_index=True)
 
 # =====================
 # RAW DATA
