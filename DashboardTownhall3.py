@@ -31,6 +31,9 @@ property = client.open("Result Townhall").worksheet("Property")
 participants_value = property.cell(2, property.find("Participants").col).value
 
 st.subheader("👥 Participants: " + participants_value)
+
+st.markdown("---")
+
 # =====================
 # DATA CLEANING
 # =====================
@@ -75,7 +78,7 @@ quiz_list = df["Quiz"].unique()
 
 for quiz in quiz_list:
 
-    st.subheader("👥 Quiz:")
+    st.markdown("### ❓Quiz:")
     st.text(f"{quiz}")
     
     quiz_df = df[df["Quiz"] == quiz]
