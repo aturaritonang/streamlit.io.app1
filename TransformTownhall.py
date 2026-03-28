@@ -26,11 +26,18 @@ responses_sheet = client.open("Survey IBMC Townhall").sheet1
 
 # create / open output
 try:
-    output_sheet = client.open("Result Townhall").sheet1
-    output_sheet.clear()
+    result_sheet = client.open("Result Townhall").worksheet("Result")
+    result_sheet.clear()
 except:
-    output_file = client.create("Result Townhall")
-    output_sheet = output_file.sheet1
+    result_file = client.create("Result Townhall")
+    result_sheet = result_file.worksheet("Result")
+
+try:
+    property_sheet = client.open("Result Townhall").worksheet("Property")
+    property_sheet.clear()
+except:
+    property_file = client.create("Result Townhall")
+    property_sheet = property_file.worksheet("Property")
 
 # ==============================
 # TRANSFORM FUNCTION
@@ -42,6 +49,8 @@ def transform():
     # ==============================
     master_df = pd.DataFrame(master_sheet.get_all_records())
     resp_df = pd.DataFrame(responses_sheet.get_all_records())
+
+    participants = resp_df["ID"].count() 
 
     # ==============================
     # BUILD MAPPING
@@ -57,6 +66,7 @@ def transform():
     question_cols = [col for col in resp_df.columns if col in question_map]
 
     rows = []
+    propertyRow = []
 
     # ==============================
     # TRANSFORM LOOP
@@ -93,7 +103,7 @@ def transform():
                 # "Name": r["Name"],
                 # "Band": r["Band"],
                 # "Gender": r["Gender"],
-                "Last modified time": r["Last modified time"],
+                # "Last modified time": r["Last modified time"],
                 "Domain": master_row["Domain"],
                 "Quiz": q,
                 # "Answers": answers_raw,
@@ -110,8 +120,17 @@ def transform():
     # WRITE TO GOOGLE SHEETS
     # ==============================
     if not out_df.empty:
-        output_sheet.append_row(out_df.columns.tolist())
-        output_sheet.append_rows(out_df.values.tolist())
+        result_sheet.append_row(out_df.columns.tolist())
+        result_sheet.append_rows(out_df.values.tolist())
+
+    propertyRow.append({
+        "Participants": participants
+    })
+
+    property_df = pd.DataFrame(propertyRow)
+
+    property_sheet.append_row(property_df.columns.tolist())
+    property_sheet.append_rows(property_df.values.tolist())
 
     print("Saved to Google Sheets:", "New Response")
 

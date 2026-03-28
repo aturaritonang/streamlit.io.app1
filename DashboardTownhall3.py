@@ -23,10 +23,14 @@ client = gspread.authorize(creds)
 
 dfQuiz = pd.DataFrame(client.open("Master Quiz").worksheet("Trial-Id").get_all_records())
 
-sheet = client.open("Result Townhall").sheet1
+sheet = client.open("Result Townhall").worksheet("Result")
 data = sheet.get_all_records()
 df = pd.DataFrame(data)
 
+property = client.open("Result Townhall").worksheet("Property")
+participants_value = property.cell(2, property.find("Participants").col).value
+
+st.subheader("Participants: " + participants_value)
 # =====================
 # DATA CLEANING
 # =====================
