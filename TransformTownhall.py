@@ -87,10 +87,10 @@ def transform():
 
             rows.append({
                 "ID": r["ID"],
-                "Start time": r["Start time"],
-                "Completion time": r["Completion time"],
-                "Email": r["Email"],
-                "Name": r["Name"],
+                # "Start time": r["Start time"],
+                # "Completion time": r["Completion time"],
+                # "Email": r["Email"],
+                # "Name": r["Name"],
                 # "Band": r["Band"],
                 # "Gender": r["Gender"],
                 "Last modified time": r["Last modified time"],

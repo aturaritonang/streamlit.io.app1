@@ -88,22 +88,54 @@ for quiz in quiz_list:
     # =====================
     # CHART
     # =====================
+    # chart = alt.Chart(totals).mark_bar().encode(
+    #     # x=alt.X("Level:N", sort=answer_cols, title="Level"),
+    #     x=alt.X("Code:N", sort=list(answer_cols_alpabet.values()), title="Code", axis=alt.Axis(labelAngle=0)),
+    #     y=alt.Y("Total:Q", title="Total"),
+    #     color=alt.Color("Level:N", scale=alt.Scale(
+    #         domain=list(rating_colors.keys()),
+    #         range=list(rating_colors.values())
+    #         ), legend=None),
+    #     tooltip=[
+    #         alt.Tooltip("Level:N", title="Level"),
+    #         # alt.Tooltip("Code:N", title="Code"),
+    #         alt.Tooltip("Total:Q", title="Total")
+    #     ]
+    # ).properties(height=400)
+
+    labels = alt.Chart(totals).mark_text(
+        align='center',
+        baseline='top',
+        dy=5,              # move text upward
+        fontSize=18,
+        fontWeight="bolder"
+    ).encode(
+        x="Code:N",
+        y="Total:Q",
+        text="Total:Q"
+    )
+
     chart = alt.Chart(totals).mark_bar().encode(
-        # x=alt.X("Level:N", sort=answer_cols, title="Level"),
-        x=alt.X("Code:N", sort=list(answer_cols_alpabet.values()), title="Code", axis=alt.Axis(labelAngle=0)),
+        x=alt.X("Code:N",
+                sort=list(answer_cols_alpabet.values()),
+                title="Code",
+                axis=alt.Axis(labelAngle=0)),
         y=alt.Y("Total:Q", title="Total"),
-        color=alt.Color("Level:N", scale=alt.Scale(
-            domain=list(rating_colors.keys()),
-            range=list(rating_colors.values())
-            ), legend=None),
+        color=alt.Color(
+            "Level:N",
+            scale=alt.Scale(
+                domain=list(rating_colors.keys()),
+                range=list(rating_colors.values())
+            ),
+            legend=None),
         tooltip=[
             alt.Tooltip("Level:N", title="Level"),
-            alt.Tooltip("Code:N", title="Code"),
             alt.Tooltip("Total:Q", title="Total")
         ]
     ).properties(height=400)
 
-    st.altair_chart(chart, use_container_width=True)
+    final_chart = chart + labels
+    st.altair_chart(final_chart, use_container_width=True)
 
     # =====================
     # TABLE (Level vs Answer)
@@ -115,7 +147,9 @@ for quiz in quiz_list:
     # st.dataframe(master_quiz_df, use_container_width=True, hide_index=True)
     # st.dataframe(master_quiz_df["5 Role Model"], use_container_width=True, hide_index=True)
 
-    newTotals["Level"] = newTotals["Level"].apply(
+    newTotals = newTotals.rename(columns={"Level": "Options"})
+
+    newTotals["Options"] = newTotals["Options"].apply(
         lambda L: master_quiz_df.iloc[0][L] if L in master_quiz_df.columns else ""
     )
 
@@ -124,7 +158,7 @@ for quiz in quiz_list:
     #           if L in master_quiz_df.columns else ""
     # )
     
-    new_order = ["Code", "Level", "Total"]
+    new_order = ["Code", "Options", "Total"]
     st.dataframe(newTotals[new_order], use_container_width=True, hide_index=True)
     # df_no_index = newTotals.reset_index().drop(columns=["index"])
     # st.table(df_no_index)
@@ -143,8 +177,21 @@ totals_all.columns = ["Level", "Total"]
 totals_all["Level"] = pd.Categorical(totals_all["Level"], categories=answer_cols, ordered=True)
 totals_all = totals_all.sort_values("Level")
 
+label_all = alt.Chart(totals_all).mark_text(
+    align='center',
+    baseline='top',
+    dy=5,              # move text upward
+    fontSize=18,
+    fontWeight="bolder"
+).encode(
+    # x="Level:N",
+    x=alt.X("Level:N", sort=answer_cols),
+    y="Total:Q",
+    text="Total:Q"
+)
+
 chart_all = alt.Chart(totals_all).mark_bar().encode(
-    x=alt.X("Level:N", sort=answer_cols, title="Code", axis=alt.Axis(labelAngle=0)),
+    x=alt.X("Level:N", sort=answer_cols, title="Level", axis=alt.Axis(labelAngle=0)),
     y=alt.Y("Total:Q", title="Total"),
     color=alt.Color("Level:N", scale=alt.Scale(
             domain=list(rating_colors.keys()),
@@ -156,8 +203,9 @@ chart_all = alt.Chart(totals_all).mark_bar().encode(
         ]
 ).properties(height=400)
 
+final_chart_all = chart_all + label_all
 
-st.altair_chart(chart_all, use_container_width=True)
+st.altair_chart(final_chart_all, use_container_width=True)
 
 st.dataframe(totals_all, use_container_width=True, hide_index=True)
 
