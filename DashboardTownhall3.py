@@ -4,7 +4,7 @@ import altair as alt
 import gspread
 from google.oauth2.service_account import Credentials
 
-st.title("🏛️ IBMC Townhall Survey")
+st.sidebar.title("🏛️ IBMC Townhall Survey")
 
 # =====================
 # CONNECT TO GOOGLE SHEET
@@ -30,9 +30,9 @@ df = pd.DataFrame(data)
 property = client.open("Result Townhall").worksheet("Property")
 participants_value = property.cell(2, property.find("Participants").col).value
 
-st.subheader("👥 Participants: " + participants_value)
+st.sidebar.subheader("👥 Participants: " + participants_value)
 
-st.markdown("---")
+# st.markdown("---")
 
 # =====================
 # DATA CLEANING
