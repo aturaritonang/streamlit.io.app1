@@ -30,7 +30,7 @@ df = pd.DataFrame(data)
 property = client.open("Result Townhall").worksheet("Property")
 participants_value = property.cell(2, property.find("Participants").col).value
 
-st.sidebar.subheader("👥 Participants: " + participants_value)
+st.sidebar.subheader(f"👥 {participants_value} Participants")
 
 # st.markdown("---")
 
