@@ -21,19 +21,19 @@ client = gspread.authorize(creds)
 # ==============================
 # LOAD SHEETS
 # ==============================
-master_sheet = client.open("Master Quiz").worksheet("Trial-Id")
-responses_sheet = client.open("Survey IBMC Townhall").sheet1
+master_sheet = client.open("Master Quiz").worksheet("Trial-En")
+responses_sheet = client.open("Survey IBMC Townhall - English").sheet1
 
 # create / open output
 try:
-    result_sheet = client.open("Result Townhall").worksheet("Result")
+    result_sheet = client.open("Result Townhall English").worksheet("Result")
     result_sheet.clear()
 except:
-    result_file = client.create("Result Townhall")
+    result_file = client.create("Result Townhall English")
     result_sheet = result_file.worksheet("Result")
 
 try:
-    property_sheet = client.open("Result Townhall").worksheet("Property")
+    property_sheet = client.open("Result Townhall English").worksheet("Property")
     property_sheet.clear()
 except:
     property_file = client.create("Result Townhall")

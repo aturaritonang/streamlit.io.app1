@@ -23,11 +23,11 @@ client = gspread.authorize(creds)
 
 dfQuiz = pd.DataFrame(client.open("Master Quiz").worksheet("Trial-En").get_all_records())
 
-sheet = client.open("Result Townhall").worksheet("Result")
+sheet = client.open("Result Townhall English").worksheet("Result")
 data = sheet.get_all_records()
 df = pd.DataFrame(data)
 
-property = client.open("Result Townhall").worksheet("Property")
+property = client.open("Result Townhall English").worksheet("Property")
 participants_value = property.cell(2, property.find("Participants").col).value
 
 st.sidebar.header(f"👥 {participants_value} participants")
