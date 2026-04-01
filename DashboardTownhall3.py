@@ -56,8 +56,8 @@ answer_cols_alpabet = {
 }
 
 rating_colors = {
-    "5 Role Model": "#44ce1b",
-    "4 Fully Meets Expectations": "#bbdb44",
+    "5 Role Model": "#0f62fe",
+    "4 Fully Meets Expectations": "#44ce1b",
     "3 Partially Meets Expectations": "#f7e379",
     "2 Needs Improvement": "#f2a134",
     "1 Does Not Meet Expectations": "#e51f1f"
