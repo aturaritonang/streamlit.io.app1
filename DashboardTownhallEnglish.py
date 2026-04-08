@@ -183,9 +183,11 @@ st.header("⭐ Total Overall")
 totals_all = df[answer_cols].sum().reset_index()
 totals_all.columns = ["Level", "Total"]
 
-participants = int(participants_value)  # Add this line
-# Compute average per participant
-totals_all["Average"] = totals_all["Total"] / participants
+participants = int(participants_value)
+totals_all["Percentage"] = ((totals_all["Total"] / 3) / participants) * 100
+# totals_all["Percentage"] = (totals_all["Total"] / 3) / participants
+totals_all["Percentage"] = totals_all["Percentage"].round(1)
+totals_all["PercentageStr"] = totals_all["Percentage"].astype(str) + "%"
 
 totals_all["Level"] = pd.Categorical(totals_all["Level"], categories=answer_cols, ordered=True)
 totals_all = totals_all.sort_values("Level")
@@ -199,21 +201,21 @@ label_all = alt.Chart(totals_all).mark_text(
 ).encode(
     # x="Level:N",
     x=alt.X("Level:N", sort=answer_cols),
-    y="Average:Q",
-    text="Average:Q"
+    y="Percentage:Q",
+    text="PercentageStr:N"
 )
 
 chart_all = alt.Chart(totals_all).mark_bar().encode(
     x=alt.X("Level:N", sort=answer_cols, title="Level", axis=alt.Axis(labelAngle=0)),
-    y=alt.Y("Average:Q", title="Average"),
+    y=alt.Y("Percentage:Q", title="Percentage (%)"),
     color=alt.Color("Level:N", scale=alt.Scale(
             domain=list(rating_colors.keys()),
             range=list(rating_colors.values())
             ), legend=None),
         tooltip=[
             alt.Tooltip("Level:N", title="Level"),
-            alt.Tooltip("Total:Q", title="Total"),
-            alt.Tooltip("Average:Q", title="Average")
+            alt.Tooltip("Total:Q", title="Total")
+            # alt.Tooltip("Percentage:Q", title="Percentage")
         ]
 ).properties(height=400)
 
@@ -221,7 +223,53 @@ final_chart_all = chart_all + label_all
 
 st.altair_chart(final_chart_all, use_container_width=True)
 
+totals_all["Percentage"] = totals_all["PercentageStr"]
+totals_all.drop(columns=["PercentageStr"], inplace=True)
 st.dataframe(totals_all, use_container_width=True, hide_index=True)
+# st.header("⭐ Total Overall")
+
+# totals_all = df[answer_cols].sum().reset_index()
+# totals_all.columns = ["Level", "Total"]
+
+# participants = int(participants_value)  # Add this line
+# # Compute average per participant
+# totals_all["Average"] = totals_all["Total"] / participants
+
+# totals_all["Level"] = pd.Categorical(totals_all["Level"], categories=answer_cols, ordered=True)
+# totals_all = totals_all.sort_values("Level")
+
+# label_all = alt.Chart(totals_all).mark_text(
+#     align='center',
+#     baseline='top',
+#     dy=5,              # move text upward
+#     fontSize=18,
+#     fontWeight="bolder"
+# ).encode(
+#     # x="Level:N",
+#     x=alt.X("Level:N", sort=answer_cols),
+#     y="Average:Q",
+#     text="Average:Q"
+# )
+
+# chart_all = alt.Chart(totals_all).mark_bar().encode(
+#     x=alt.X("Level:N", sort=answer_cols, title="Level", axis=alt.Axis(labelAngle=0)),
+#     y=alt.Y("Average:Q", title="Average"),
+#     color=alt.Color("Level:N", scale=alt.Scale(
+#             domain=list(rating_colors.keys()),
+#             range=list(rating_colors.values())
+#             ), legend=None),
+#         tooltip=[
+#             alt.Tooltip("Level:N", title="Level"),
+#             alt.Tooltip("Total:Q", title="Total"),
+#             alt.Tooltip("Average:Q", title="Average")
+#         ]
+# ).properties(height=400)
+
+# final_chart_all = chart_all + label_all
+
+# st.altair_chart(final_chart_all, use_container_width=True)
+
+# st.dataframe(totals_all, use_container_width=True, hide_index=True)
 
 # =====================
 # RAW DATA
