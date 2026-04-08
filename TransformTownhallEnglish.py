@@ -22,7 +22,7 @@ client = gspread.authorize(creds)
 # LOAD SHEETS
 # ==============================
 master_sheet = client.open("Master Quiz").worksheet("Trial-En")
-responses_sheet = client.open("Survey IBMC Townhall - English").sheet1
+responses_sheet = client.open("Survey Townhall English").sheet1
 
 # create / open output
 try:
