@@ -6,7 +6,7 @@ from google.oauth2.service_account import Credentials
 # =====================
 # APP TITLE
 # =====================
-st.sidebar.title("🏛️ IBM Culture Survey")
+st.sidebar.title("🏛️ IBMC Culture Survey")
 # =====================
 # CONNECT TO GOOGLE SHEET
 # =====================
