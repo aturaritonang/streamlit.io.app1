@@ -22,21 +22,21 @@ client = gspread.authorize(creds)
 # LOAD SHEETS
 # ==============================
 master_sheet = client.open("Master Quiz").worksheet("Quiz-Id")
-responses_sheet = client.open("Response Survey").sheet1
+responses_sheet = client.open("Response Survey 5").sheet1
 
 # create / open output
 try:
-    result_sheet = client.open("Result Survey").worksheet("Result")
+    result_sheet = client.open("Result Survey 5").worksheet("Result")
     result_sheet.clear()
 except:
-    result_file = client.create("Result Survey")
+    result_file = client.create("Result Survey 5")
     result_sheet = result_file.worksheet("Result")
 
 try:
-    property_sheet = client.open("Result Survey").worksheet("Property")
+    property_sheet = client.open("Result Survey 5").worksheet("Property")
     property_sheet.clear()
 except:
-    property_file = client.create("Result Survey")
+    property_file = client.create("Result Survey 5")
     property_sheet = property_file.worksheet("Property")
 
 # ==============================
