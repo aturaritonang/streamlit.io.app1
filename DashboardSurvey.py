@@ -172,10 +172,17 @@ participants_placeholder.header(f"👥 {st.session_state.participants_value} par
 # =====================
 quiz_list = df_filtered["Quiz"].unique()
 for i, quiz in enumerate(quiz_list, start=1):
-    st.markdown(f"### ❓Quiz: No. {i}")
+    master_quiz_df = dfQuiz[dfQuiz["Quiz"] == quiz]
+    domain_value = master_quiz_df["Domain"].iloc[0]
+    quizA, quizB = st.columns(2)
+    with quizA:
+        st.markdown(f"### ❓Quiz: No. {i}")
+    with quizB:
+        st.markdown(f"<h3 style='text-align:right;'>Domain: {domain_value}</h3>", unsafe_allow_html=True)
+        # st.markdown(f"### Domain: {domain_value}")
+
     st.text(f"{quiz}")
     quiz_df = df_filtered[df_filtered["Quiz"] == quiz]
-    master_quiz_df = dfQuiz[dfQuiz["Quiz"] == quiz]
     totals = quiz_df[answer_cols].sum().reset_index()
     totals.columns = ["Level", "Total"]
     totals["Level"] = pd.Categorical(totals["Level"], categories=answer_cols, ordered=True)
