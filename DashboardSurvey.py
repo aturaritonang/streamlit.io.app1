@@ -218,44 +218,50 @@ for i, quiz in enumerate(quiz_list, start=1):
 # =====================
 # TOTAL KESELURUHAN
 # =====================
-st.header("⭐ Total Overall")
-totals_all = df_filtered[answer_cols].sum().reset_index()
-totals_all.columns = ["Level", "Total"]
-# =====================
-# REPLACE "20" → number of unique Quiz
-# =====================
+
 unique_quiz_count = df_filtered["Quiz"].nunique()
 participants = st.session_state.participants_value
-totals_all["Percentage"] = ((totals_all["Total"] / unique_quiz_count) / participants) * 100
-totals_all["Percentage"] = totals_all["Percentage"].round(1)
-totals_all["PercentageStr"] = totals_all["Percentage"].astype(str) + "%"
-totals_all["Level"] = pd.Categorical(totals_all["Level"], categories=answer_cols, ordered=True)
-totals_all = totals_all.sort_values("Level")
-label_all = alt.Chart(totals_all).mark_text(
-    align='center',
-    baseline='top',
-    dy=5,
-    fontSize=18,
-    fontWeight="bolder"
-).encode(
-    x=alt.X("Level:N", sort=answer_cols),
-    y="Percentage:Q",
-    text="PercentageStr:N"
-)
-chart_all = alt.Chart(totals_all).mark_bar().encode(
-    x=alt.X("Level:N", sort=answer_cols, title="Level", axis=alt.Axis(labelAngle=0)),
-    y=alt.Y("Percentage:Q", title="Percentage (%)"),
-    color=alt.Color(
-        "Level:N",
-        scale=alt.Scale(domain=list(rating_colors.keys()), range=list(rating_colors.values())),
-        legend=None
-    ),
-    tooltip=[
-        alt.Tooltip("Level:N", title="Level"),
-        alt.Tooltip("Total:Q", title="Total")
-    ]
-).properties(height=400)
-st.altair_chart(chart_all + label_all, use_container_width=True)
-totals_all["Percentage"] = totals_all["PercentageStr"]
-totals_all.drop(columns=["PercentageStr"], inplace=True)
-st.dataframe(totals_all, use_container_width=True, hide_index=True)
+
+if participants == 0:
+    st.header("😕 Sorry,")
+    st.subheader("🚫 No data found or 🔎 check filters")
+else:
+    st.header("⭐ Overall")
+    totals_all = df_filtered[answer_cols].sum().reset_index()
+    totals_all.columns = ["Level", "Total"]
+    # =====================
+    # REPLACE "20" → number of unique Quiz
+    # =====================
+    totals_all["Percentage"] = ((totals_all["Total"] / unique_quiz_count) / participants) * 100
+    totals_all["Percentage"] = totals_all["Percentage"].round(1)
+    totals_all["PercentageStr"] = totals_all["Percentage"].astype(str) + "%"
+    totals_all["Level"] = pd.Categorical(totals_all["Level"], categories=answer_cols, ordered=True)
+    totals_all = totals_all.sort_values("Level")
+    label_all = alt.Chart(totals_all).mark_text(
+        align='center',
+        baseline='top',
+        dy=5,
+        fontSize=18,
+        fontWeight="bolder"
+    ).encode(
+        x=alt.X("Level:N", sort=answer_cols),
+        y="Percentage:Q",
+        text="PercentageStr:N"
+    )
+    chart_all = alt.Chart(totals_all).mark_bar().encode(
+        x=alt.X("Level:N", sort=answer_cols, title="Level", axis=alt.Axis(labelAngle=0)),
+        y=alt.Y("Percentage:Q", title="Percentage (%)"),
+        color=alt.Color(
+            "Level:N",
+            scale=alt.Scale(domain=list(rating_colors.keys()), range=list(rating_colors.values())),
+            legend=None
+        ),
+        tooltip=[
+            alt.Tooltip("Level:N", title="Level"),
+            alt.Tooltip("Total:Q", title="Total")
+        ]
+    ).properties(height=400)
+    st.altair_chart(chart_all + label_all, use_container_width=True)
+    totals_all["Percentage"] = totals_all["PercentageStr"]
+    totals_all.drop(columns=["PercentageStr"], inplace=True)
+    st.dataframe(totals_all, use_container_width=True, hide_index=True)
