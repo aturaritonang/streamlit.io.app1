@@ -21,22 +21,24 @@ client = gspread.authorize(creds)
 # ==============================
 # LOAD SHEETS
 # ==============================
+response_survey = "Response Survey"
+result_survey = "Result Survey"
 master_sheet = client.open("Master Quiz").worksheet("Quiz-Id")
-responses_sheet = client.open("Response Survey 5").sheet1
+responses_sheet = client.open(response_survey).sheet1
 
 # create / open output
 try:
-    result_sheet = client.open("Result Survey 5").worksheet("Result")
+    result_sheet = client.open(result_survey).worksheet("Result")
     result_sheet.clear()
 except:
-    result_file = client.create("Result Survey 5")
+    result_file = client.create(result_survey)
     result_sheet = result_file.worksheet("Result")
 
 try:
-    property_sheet = client.open("Result Survey 5").worksheet("Property")
+    property_sheet = client.open(result_survey).worksheet("Property")
     property_sheet.clear()
 except:
-    property_file = client.create("Result Survey 5")
+    property_file = client.create(result_survey)
     property_sheet = property_file.worksheet("Property")
 
 # ==============================
@@ -133,7 +135,7 @@ def transform():
     property_sheet.append_row(property_df.columns.tolist())
     property_sheet.append_rows(property_df.values.tolist())
 
-    print("Saved to Google Sheets:", "New Response")
+    print("Saved to Google Sheets:", result_survey)
 
 
 # ==============================

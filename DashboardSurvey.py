@@ -20,7 +20,7 @@ creds = Credentials.from_service_account_info(
 )
 client = gspread.authorize(creds)
 dfQuiz = pd.DataFrame(client.open("Master Quiz").worksheet("Quiz-Id").get_all_records())
-sheet = client.open("Result Survey 5").worksheet("Result")
+sheet = client.open("Result Survey").worksheet("Result")
 data = sheet.get_all_records()
 df = pd.DataFrame(data)
 # =====================
