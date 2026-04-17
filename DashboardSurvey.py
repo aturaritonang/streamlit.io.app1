@@ -224,7 +224,7 @@ participants = st.session_state.participants_value
 
 if participants == 0:
     st.header("😕 Sorry,")
-    st.subheader("🚫 No data found or 🔎 check filters")
+    st.subheader("🚫 No data found or 🔎 check filters, please!")
 else:
     st.header("⭐ Overall")
     totals_all = df_filtered[answer_cols].sum().reset_index()
